@@ -18,7 +18,7 @@
 <script type="text/javascript" src="../js/moment-with-locales.min.js"></script>
 <script type="text/javascript" src="../js/bootstrap-datetimepicker.js"></script>
 <script type="text/javascript" src="../js/bootstrap-table.js"></script>
-<script type="text/javascript" src="../js/bootstrap-table-locale-all.min.js"></script>
+<script type="text/javascript" src="../js/bootstrap-table-zh-CN.min.js"></script>
 </head>
 <body>
 	<div>
@@ -40,18 +40,18 @@
 										<tbody>
 											<tr>
 												<td><label for="name">订单名称</label></td>
-												<td><input type="text" class="form-control" name="orderName" value="${orderName }" placeholder="请输入订单名称"></td>
+												<td><input type="text" class="form-control" id="orderName" name="orderName" value="${orderName }" placeholder="请输入订单名称"></td>
 												<td><label for="name">产品名称及规格</label></td>
-												<td><input type="text" class="form-control" name="proName" value="${proName }" placeholder="请输入产品名称及规格"></td>
+												<td><input type="text" class="form-control" id="proName" name="proName" value="${proName }" placeholder="请输入产品名称及规格"></td>
 											</tr>
 											<tr>
 												<td><label for="name">生产日期</label></td>
-												<td><input type="text" class="input-sm form-control datepicker" name="proDate" value="${proDate }" placeholder="请选择生产日期"></td>
+												<td><input type="text" class="input-sm form-control datepicker" id="proDate" name="proDate" value="${proDate }" placeholder="请选择生产日期"></td>
 												<!-- <td colspan="2"><button type="submit" class="btn btn-default">提交</button></td> -->
 											</tr>
 										</tbody>
 									</table>
-									<button type="submit" class="btn btn-default">提交</button>
+									<button type="button" id="searchBtm" class="btn btn-default">提交</button>
 									<button type="button" id="clearBtn" class="btn btn-default">清空</button>
 								</form>
 							</div>
@@ -65,9 +65,9 @@
 			<div class="row">
 				<div class="col-lg-12">
 					<div>
-						<table class="table table-bordered">
+						<table id="mytab" class="table table-hover">
 							<%-- <caption>生产计划</caption> --%>
-							<thead>
+							<%-- <thead>
 								<tr>
 									<th>序号</th>
 									<th>订单计划</th>
@@ -92,18 +92,18 @@
 										<td>${order.achRate }%</td>
 									</tr>
 								</c:forEach>
-							</tbody>
+							</tbody> --%>
 						</table>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="col-sm-12 col-lg-12 main" style="margin-top: 50px;">
+		<div class="col-sm-12 col-lg-12 main" style="margin-top: 20px;">
 			<div class="row">
 				<div class="col-lg-12">
 					<div>
 						<button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">新增生产计划</button>
-						<button type="button" class="btn btn-default">删除生产计划</button>
+						<button type="button" id="delBtn" class="btn btn-default">删除生产计划</button>
 					</div>
 				</div>
 			</div>
@@ -170,12 +170,120 @@
 		$('#saveButton').on('click', function(){
 			$('#orderForm').submit();
 		})
+		$('#searchBtm').on('click', function(){
+			$("#mytab").bootstrapTable("refresh");
+		})
 		$('#clearBtn').on('click', function(){
 			$("input[name='orderName']").val('');
 			$("input[name='proName']").val('');
 			$("input[name='proDate']").val('');
-			$('#searchForm').submit();
+			//$('#searchForm').submit();
+			$("#mytab").bootstrapTable("refresh");
 		})
+		$('#delBtn').on('click', function(){
+			var rows = $("#mytab").bootstrapTable("getSelections");
+			var ids = [];
+			var len = rows.length;
+			debugger;
+			for(var i=0;i<len;i++){
+				ids.push(rows[i].id);
+			}
+			debugger;
+			$.ajax({
+				url:"deleteOrder",
+				dataType:"json",
+				traditional: true,
+				method:"post",
+				data:{
+					"ids":ids
+				},
+				success:function(data){
+					//document.getElementById("tipContent").innerText="删除成功";
+					//$("#Tip").modal('show');
+					$("#mytab").bootstrapTable("refresh");
+				},
+				error:function(){
+					//document.getElementById("tipContent").innerText="删除失败";
+					//$("#Tip").modal('show');
+				}
+			});
+		})
+		
+		$('#mytab').bootstrapTable({
+			method : 'get',
+			url : "getPageInfo",
+			dataType : "json",
+			dataField : "data",
+			striped : true, 
+			pageNumber : 1, 
+			pagination : true,
+			sidePagination : 'server',
+			pageSize : 5,
+			pageList : [ 5, 10, 20 ],
+			showRefresh : false,
+			queryParams : function(params) {
+				var temp = {
+					limit : params.limit, 
+					offset : params.offset,
+					orderName : $('#orderName').val(),
+					proName : $('#proName').val(),
+					proDate : $('#proDate').val(),
+				};
+				return temp;
+			},
+			columns : [ {
+				checkbox : true 
+			},{
+				title : '序号',
+				field: '',  
+			    formatter: function (value, row, index) {  
+			        return index+1;  
+			    } 
+			}, {
+				title : '订单计划',
+				field : 'orderName',
+				sortable : false
+			}, {
+				title : '品名/规格',
+				field : 'proName',
+			}, {
+				title : '生产日期',
+				field : 'proDate',
+				formatter: function (value, row, index) {
+			        return changeDateFormat(value)
+			    }
+			}, {
+				title : '计划数目',
+				field : 'planCount',
+			}, {
+				title : '实际数目',
+				field : 'actualCount',
+			}, {
+				title : '差异',
+				field : 'diffCount',
+			}, {
+				title : '达成率',
+				field : 'achRate',
+				formatter: function (value, row, index) {
+			        return value + '%';
+			    }
+			} ]
+		})
+		
+		function changeDateFormat(cellval) {
+		    var dateVal = cellval + "";
+		    if (cellval != null) {
+		        var date = new Date(parseInt(dateVal.replace("/Date(", "").replace(")/", ""), 10));
+		        var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
+		        var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
+		
+		        //var hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+		        //var minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+		        //var seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+		
+		        return date.getFullYear() + "-" + month + "-" + currentDate; //+ " " + hours + ":" + minutes + ":" + seconds;
+		    }
+		}
 	</script>
 </body>
 </html>

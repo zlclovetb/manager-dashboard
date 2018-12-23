@@ -3,7 +3,9 @@ package com.spring.production.controller;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,7 +17,10 @@ import org.springframework.web.bind.ServletRequestDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.spring.production.entity.OrderPlan;
 import com.spring.production.entity.OrderPlanExample;
 import com.spring.production.entity.OrderPlanExample.Criteria;
@@ -46,6 +51,36 @@ public class OrderPlanController {
     return "orderList"; 
   }
   
+  @SuppressWarnings("rawtypes")
+  @RequestMapping(path="getPageInfo", method=RequestMethod.GET)
+  public @ResponseBody Map<String,Object> toTableList(Model model, String orderName, String proName, String proDate, int limit,int offset) {
+    OrderPlanExample example = new OrderPlanExample();
+    Criteria criteria = example.createCriteria();
+    if(orderName != null) {
+      criteria.andOrderNameLike("%" + orderName + "%");
+    }
+    if(proName != null) {
+      criteria.andProNameLike("%" + proName + "%");
+    }
+    if(proDate != null) {
+      SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+      try {
+        Date date = simpleDateFormat.parse(proDate);
+        criteria.andProDateEqualTo(date);
+      } catch (ParseException e) {
+      }
+    }
+    
+    PageHelper.offsetPage(offset, limit);
+    List<OrderPlan> orderPlanlist = orderPlanService.selectByExample(example);
+    model.addAttribute("dataList", orderPlanlist);
+    
+    Map<String, Object> map = new HashMap<String, Object>();
+    map.put("total", ((Page)orderPlanlist).getTotal());
+    map.put("data", orderPlanlist);
+    return map;
+  }
+  
   @RequestMapping(path="toList", method=RequestMethod.POST)
   public String searchList(Model model, String orderName, String proName, String proDate) {
     OrderPlanExample example = new OrderPlanExample();
@@ -70,6 +105,52 @@ public class OrderPlanController {
     model.addAttribute("proName", proName);
     model.addAttribute("proDate", proDate);
     return "orderList"; 
+  }
+  
+  @RequestMapping(path="getPageInfo", method=RequestMethod.POST)
+  public @ResponseBody Map<String,Object> searchFilterList(Model model, String orderName, String proName, String proDate , int limit,int offset) {
+    OrderPlanExample example = new OrderPlanExample();
+    Criteria criteria = example.createCriteria();
+    if(orderName != null) {
+      criteria.andOrderNameLike("%" + orderName + "%");
+    }
+    if(proName != null) {
+      criteria.andProNameLike("%" + proName + "%");
+    }
+    if(proDate != null) {
+      SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+      try {
+        Date date = simpleDateFormat.parse(proDate);
+        criteria.andProDateEqualTo(date);
+      } catch (ParseException e) {
+      }
+    }
+    PageHelper.startPage(offset, limit);
+    List<OrderPlan> orderPlanlist = orderPlanService.selectByExample(example);
+    
+    Map<String, Object> map = new HashMap<String, Object>();
+    map.put("total", ((Page)orderPlanlist).getTotal());
+    map.put("data", orderPlanlist);
+    
+    model.addAttribute("dataList", orderPlanlist);
+    model.addAttribute("orderName", orderName);
+    model.addAttribute("proName", proName);
+    model.addAttribute("proDate", proDate);
+    return map; 
+  }
+  
+  @RequestMapping("/deleteOrder")
+  public @ResponseBody Map<String,Object> deleteOrder(HttpServletRequest request) {
+    String[] list = request.getParameterValues("ids");
+    for (int i = 0; i < list.length; i++) {
+      String id = list[i];
+      Integer orderID = Integer.valueOf(id);
+      orderPlanService.deleteByPrimaryKey(orderID);
+    }
+
+    Map<String, Object> map = new HashMap<String, Object>();
+    map.put("state", "success");
+    return map;
   }
   
   @InitBinder
