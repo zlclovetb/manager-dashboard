@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.paradm.dms.dao.OrderPlanMapper">
+  <resultMap id="BaseResultMap" type="com.spring.production.entity.OrderPlan">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="ORDER_NAME" jdbcType="VARCHAR" property="orderName" />
+    <result column="PRO_NAME" jdbcType="VARCHAR" property="proName" />
+    <result column="PLAN_COUNT" jdbcType="INTEGER" property="planCount" />
+    <result column="ACTUAL_COUNT" jdbcType="INTEGER" property="actualCount" />
+    <result column="DIFF_COUNT" jdbcType="INTEGER" property="diffCount" />
+    <result column="ACH_RATE" jdbcType="VARCHAR" property="achRate" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, ORDER_NAME, PRO_NAME, PLAN_COUNT, ACTUAL_COUNT, DIFF_COUNT, ACH_RATE
+  </sql>
+  <select id="selectByExample" parameterType="com.spring.production.entity.OrderPlanExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from order_plan
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from order_plan
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from order_plan
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.spring.production.entity.OrderPlan">
+    insert into order_plan (ID, ORDER_NAME, PRO_NAME, 
+      PLAN_COUNT, ACTUAL_COUNT, DIFF_COUNT, 
+      ACH_RATE)
+    values (#{id,jdbcType=INTEGER}, #{orderName,jdbcType=VARCHAR}, #{proName,jdbcType=VARCHAR}, 
+      #{planCount,jdbcType=INTEGER}, #{actualCount,jdbcType=INTEGER}, #{diffCount,jdbcType=INTEGER}, 
+      #{achRate,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.spring.production.entity.OrderPlan">
+    insert into order_plan
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="orderName != null">
+        ORDER_NAME,
+      </if>
+      <if test="proName != null">
+        PRO_NAME,
+      </if>
+      <if test="planCount != null">
+        PLAN_COUNT,
+      </if>
+      <if test="actualCount != null">
+        ACTUAL_COUNT,
+      </if>
+      <if test="diffCount != null">
+        DIFF_COUNT,
+      </if>
+      <if test="achRate != null">
+        ACH_RATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderName != null">
+        #{orderName,jdbcType=VARCHAR},
+      </if>
+      <if test="proName != null">
+        #{proName,jdbcType=VARCHAR},
+      </if>
+      <if test="planCount != null">
+        #{planCount,jdbcType=INTEGER},
+      </if>
+      <if test="actualCount != null">
+        #{actualCount,jdbcType=INTEGER},
+      </if>
+      <if test="diffCount != null">
+        #{diffCount,jdbcType=INTEGER},
+      </if>
+      <if test="achRate != null">
+        #{achRate,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into order_plan (ID, ORDER_NAME, PRO_NAME, 
+      PLAN_COUNT, ACTUAL_COUNT, DIFF_COUNT, 
+      ACH_RATE)
+    values 
+    <foreach collection="list" index="index" item="item" separator=",">
+      (#{item.id,jdbcType=INTEGER}, #{item.orderName,jdbcType=VARCHAR}, #{item.proName,jdbcType=VARCHAR}, 
+        #{item.planCount,jdbcType=INTEGER}, #{item.actualCount,jdbcType=INTEGER}, #{item.diffCount,jdbcType=INTEGER}, 
+        #{item.achRate,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+  <insert id="insertBatchSelective" parameterType="java.util.List">
+    insert into order_plan
+    (ID, ORDER_NAME, PRO_NAME, PLAN_COUNT, ACTUAL_COUNT, DIFF_COUNT, ACH_RATE)
+    values 
+    <foreach collection="list" index="index" item="item" separator=",">
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+        <if test="item.id != null">
+          #{item.id,jdbcType=INTEGER},
+        </if>
+        <if test="item.id == null">
+          NULL,
+        </if>
+        <if test="item.orderName != null">
+          #{item.orderName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.orderName == null">
+          NULL,
+        </if>
+        <if test="item.proName != null">
+          #{item.proName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.proName == null">
+          NULL,
+        </if>
+        <if test="item.planCount != null">
+          #{item.planCount,jdbcType=INTEGER},
+        </if>
+        <if test="item.planCount == null">
+          NULL,
+        </if>
+        <if test="item.actualCount != null">
+          #{item.actualCount,jdbcType=INTEGER},
+        </if>
+        <if test="item.actualCount == null">
+          NULL,
+        </if>
+        <if test="item.diffCount != null">
+          #{item.diffCount,jdbcType=INTEGER},
+        </if>
+        <if test="item.diffCount == null">
+          NULL,
+        </if>
+        <if test="item.achRate != null">
+          #{item.achRate,jdbcType=VARCHAR},
+        </if>
+        <if test="item.achRate == null">
+          NULL,
+        </if>
+      </trim>
+    </foreach>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map">
+    update order_plan
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.orderName != null">
+        ORDER_NAME = #{record.orderName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.proName != null">
+        PRO_NAME = #{record.proName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.planCount != null">
+        PLAN_COUNT = #{record.planCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.actualCount != null">
+        ACTUAL_COUNT = #{record.actualCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.diffCount != null">
+        DIFF_COUNT = #{record.diffCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.achRate != null">
+        ACH_RATE = #{record.achRate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update order_plan
+    set ID = #{record.id,jdbcType=INTEGER},
+      ORDER_NAME = #{record.orderName,jdbcType=VARCHAR},
+      PRO_NAME = #{record.proName,jdbcType=VARCHAR},
+      PLAN_COUNT = #{record.planCount,jdbcType=INTEGER},
+      ACTUAL_COUNT = #{record.actualCount,jdbcType=INTEGER},
+      DIFF_COUNT = #{record.diffCount,jdbcType=INTEGER},
+      ACH_RATE = #{record.achRate,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.spring.production.entity.OrderPlan">
+    update order_plan
+    <set>
+      <if test="orderName != null">
+        ORDER_NAME = #{orderName,jdbcType=VARCHAR},
+      </if>
+      <if test="proName != null">
+        PRO_NAME = #{proName,jdbcType=VARCHAR},
+      </if>
+      <if test="planCount != null">
+        PLAN_COUNT = #{planCount,jdbcType=INTEGER},
+      </if>
+      <if test="actualCount != null">
+        ACTUAL_COUNT = #{actualCount,jdbcType=INTEGER},
+      </if>
+      <if test="diffCount != null">
+        DIFF_COUNT = #{diffCount,jdbcType=INTEGER},
+      </if>
+      <if test="achRate != null">
+        ACH_RATE = #{achRate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.spring.production.entity.OrderPlan">
+    update order_plan
+    set ORDER_NAME = #{orderName,jdbcType=VARCHAR},
+      PRO_NAME = #{proName,jdbcType=VARCHAR},
+      PLAN_COUNT = #{planCount,jdbcType=INTEGER},
+      ACTUAL_COUNT = #{actualCount,jdbcType=INTEGER},
+      DIFF_COUNT = #{diffCount,jdbcType=INTEGER},
+      ACH_RATE = #{achRate,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateBatchByPrimaryKey" parameterType="java.util.List">
+    update order_plan
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="ORDER_NAME =case " suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.orderName != null">
+            when id = #{item.id} then #{item.orderName}
+          </if>
+          <if test="item.orderName == null">
+            when id = #{item.id} then order_plan.ORDER_NAME
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="PRO_NAME =case " suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.proName != null">
+            when id = #{item.id} then #{item.proName}
+          </if>
+          <if test="item.proName == null">
+            when id = #{item.id} then order_plan.PRO_NAME
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="PLAN_COUNT =case " suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.planCount != null">
+            when id = #{item.id} then #{item.planCount}
+          </if>
+          <if test="item.planCount == null">
+            when id = #{item.id} then order_plan.PLAN_COUNT
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="ACTUAL_COUNT =case " suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.actualCount != null">
+            when id = #{item.id} then #{item.actualCount}
+          </if>
+          <if test="item.actualCount == null">
+            when id = #{item.id} then order_plan.ACTUAL_COUNT
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="DIFF_COUNT =case " suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.diffCount != null">
+            when id = #{item.id} then #{item.diffCount}
+          </if>
+          <if test="item.diffCount == null">
+            when id = #{item.id} then order_plan.DIFF_COUNT
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="ACH_RATE =case " suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.achRate != null">
+            when id = #{item.id} then #{item.achRate}
+          </if>
+          <if test="item.achRate == null">
+            when id = #{item.id} then order_plan.ACH_RATE
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where ID in 
+    <foreach close=")" collection="list" index="index" item="item" open="(" separator=",">
+       #{item.id} 
+    </foreach>
+  </update>
+  <update id="updateBatchByPrimaryKeySelective" parameterType="java.util.List">
+    update order_plan
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="ORDER_NAME =case id" suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.orderName != null ">
+            when  #{item.id} then #{item.orderName}
+          </if>
+          <if test="item.orderName == null ">
+            when  #{item.id} then order_plan.ORDER_NAME
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="PRO_NAME =case id" suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.proName != null ">
+            when  #{item.id} then #{item.proName}
+          </if>
+          <if test="item.proName == null ">
+            when  #{item.id} then order_plan.PRO_NAME
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="PLAN_COUNT =case id" suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.planCount != null ">
+            when  #{item.id} then #{item.planCount}
+          </if>
+          <if test="item.planCount == null ">
+            when  #{item.id} then order_plan.PLAN_COUNT
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="ACTUAL_COUNT =case id" suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.actualCount != null ">
+            when  #{item.id} then #{item.actualCount}
+          </if>
+          <if test="item.actualCount == null ">
+            when  #{item.id} then order_plan.ACTUAL_COUNT
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="DIFF_COUNT =case id" suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.diffCount != null ">
+            when  #{item.id} then #{item.diffCount}
+          </if>
+          <if test="item.diffCount == null ">
+            when  #{item.id} then order_plan.DIFF_COUNT
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="ACH_RATE =case id" suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.achRate != null ">
+            when  #{item.id} then #{item.achRate}
+          </if>
+          <if test="item.achRate == null ">
+            when  #{item.id} then order_plan.ACH_RATE
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where ID in 
+    <foreach close=")" collection="list" index="index" item="item" open="(" separator=",">
+       #{item.id} 
+    </foreach>
+  </update>
+  <update id="updateBatchByExample" parameterType="map">
+    update order_plan
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="orderName =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          when  #{item.id} then #{item.orderName}
+        </foreach>
+      </trim>
+      <trim prefix="proName =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          when  #{item.id} then #{item.proName}
+        </foreach>
+      </trim>
+      <trim prefix="planCount =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          when  #{item.id} then #{item.planCount}
+        </foreach>
+      </trim>
+      <trim prefix="actualCount =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          when  #{item.id} then #{item.actualCount}
+        </foreach>
+      </trim>
+      <trim prefix="diffCount =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          when  #{item.id} then #{item.diffCount}
+        </foreach>
+      </trim>
+      <trim prefix="achRate =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          when  #{item.id} then #{item.achRate}
+        </foreach>
+      </trim>
+    </trim>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateBatchByExampleSelective" parameterType="map">
+    update order_plan
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="orderName =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          <if test="item.orderName != null ">
+            when  #{item.id} then #{item.orderName}
+          </if>
+          <if test="item.orderName == null ">
+            when  #{item.id} then order_plan.ORDER_NAME
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="proName =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          <if test="item.proName != null ">
+            when  #{item.id} then #{item.proName}
+          </if>
+          <if test="item.proName == null ">
+            when  #{item.id} then order_plan.PRO_NAME
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="planCount =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          <if test="item.planCount != null ">
+            when  #{item.id} then #{item.planCount}
+          </if>
+          <if test="item.planCount == null ">
+            when  #{item.id} then order_plan.PLAN_COUNT
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="actualCount =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          <if test="item.actualCount != null ">
+            when  #{item.id} then #{item.actualCount}
+          </if>
+          <if test="item.actualCount == null ">
+            when  #{item.id} then order_plan.ACTUAL_COUNT
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="diffCount =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          <if test="item.diffCount != null ">
+            when  #{item.id} then #{item.diffCount}
+          </if>
+          <if test="item.diffCount == null ">
+            when  #{item.id} then order_plan.DIFF_COUNT
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="achRate =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          <if test="item.achRate != null ">
+            when  #{item.id} then #{item.achRate}
+          </if>
+          <if test="item.achRate == null ">
+            when  #{item.id} then order_plan.ACH_RATE
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

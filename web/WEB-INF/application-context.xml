@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        ">
+  <context:component-scan base-package="com.spring.production">
+    <!-- <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/> -->
+  </context:component-scan>
+  
+  
+  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+    <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+    <property name="url" value="jdbc:mysql://192.168.23.10:3306/production?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true" />
+    <property name="username" value="root" />
+    <property name="password" value="password" />
+    <property name="defaultAutoCommit" value="false" />
+  </bean>
+  
+  <bean id="sessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="dataSource"></property>
+    <property name="mapperLocations" value="classpath*:mapper/*.xml"></property>
+    <property name="typeAliasesPackage" value="com.spring.production.entity"></property>
+    <property name="configLocation" value="classpath:mybatis-config.xml"></property>
+  </bean>
+  
+  <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+    <property name="basePackage" value="com.spring.production.dao" />
+    <property name="sqlSessionFactoryBeanName" value="sessionFactory" />
+  </bean>
+  
+  <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <property name="dataSource" ref="dataSource"></property>
+  </bean>
+  <tx:annotation-driven transaction-manager="transactionManager"/>
+  
+  <!-- <import resource="../redis/redis-cache.xml"/> -->
+  <!-- <import resource="../redis/spring-cache.xml"/> -->
+</beans>

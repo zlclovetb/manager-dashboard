@@ -1,0 +1,829 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.paradm.dms.dao.OrderPlanDetailMapper">
+  <resultMap id="BaseResultMap" type="com.spring.production.entity.OrderPlanDetail">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="ORDER_ID" jdbcType="INTEGER" property="orderId" />
+    <result column="BEAT" jdbcType="INTEGER" property="beat" />
+    <result column="ACTUAL_YIELD" jdbcType="INTEGER" property="actualYield" />
+    <result column="ACTUAL_DIFF" jdbcType="INTEGER" property="actualDiff" />
+    <result column="PLAIN_START_TIME" jdbcType="TIMESTAMP" property="plainStartTime" />
+    <result column="ACTUAL_START_TIME" jdbcType="TIMESTAMP" property="actualStartTime" />
+    <result column="PLAIN_END_TIME" jdbcType="TIMESTAMP" property="plainEndTime" />
+    <result column="ACTUAL_END_TIME" jdbcType="TIMESTAMP" property="actualEndTime" />
+    <result column="PRO_STATUS" jdbcType="CHAR" property="proStatus" />
+    <result column="PLAN_STAFF_COUNT" jdbcType="INTEGER" property="planStaffCount" />
+    <result column="ACTUAL_STAFF_COUNT" jdbcType="INTEGER" property="actualStaffCount" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    ID, ORDER_ID, BEAT, ACTUAL_YIELD, ACTUAL_DIFF, PLAIN_START_TIME, ACTUAL_START_TIME, 
+    PLAIN_END_TIME, ACTUAL_END_TIME, PRO_STATUS, PLAN_STAFF_COUNT, ACTUAL_STAFF_COUNT
+  </sql>
+  <select id="selectByExample" parameterType="com.spring.production.entity.OrderPlanDetailExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from order_plan_detail
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from order_plan_detail
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from order_plan_detail
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.spring.production.entity.OrderPlanDetail">
+    insert into order_plan_detail (ID, ORDER_ID, BEAT, 
+      ACTUAL_YIELD, ACTUAL_DIFF, PLAIN_START_TIME, 
+      ACTUAL_START_TIME, PLAIN_END_TIME, ACTUAL_END_TIME, 
+      PRO_STATUS, PLAN_STAFF_COUNT, ACTUAL_STAFF_COUNT
+      )
+    values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=INTEGER}, #{beat,jdbcType=INTEGER}, 
+      #{actualYield,jdbcType=INTEGER}, #{actualDiff,jdbcType=INTEGER}, #{plainStartTime,jdbcType=TIMESTAMP}, 
+      #{actualStartTime,jdbcType=TIMESTAMP}, #{plainEndTime,jdbcType=TIMESTAMP}, #{actualEndTime,jdbcType=TIMESTAMP}, 
+      #{proStatus,jdbcType=CHAR}, #{planStaffCount,jdbcType=INTEGER}, #{actualStaffCount,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.spring.production.entity.OrderPlanDetail">
+    insert into order_plan_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="orderId != null">
+        ORDER_ID,
+      </if>
+      <if test="beat != null">
+        BEAT,
+      </if>
+      <if test="actualYield != null">
+        ACTUAL_YIELD,
+      </if>
+      <if test="actualDiff != null">
+        ACTUAL_DIFF,
+      </if>
+      <if test="plainStartTime != null">
+        PLAIN_START_TIME,
+      </if>
+      <if test="actualStartTime != null">
+        ACTUAL_START_TIME,
+      </if>
+      <if test="plainEndTime != null">
+        PLAIN_END_TIME,
+      </if>
+      <if test="actualEndTime != null">
+        ACTUAL_END_TIME,
+      </if>
+      <if test="proStatus != null">
+        PRO_STATUS,
+      </if>
+      <if test="planStaffCount != null">
+        PLAN_STAFF_COUNT,
+      </if>
+      <if test="actualStaffCount != null">
+        ACTUAL_STAFF_COUNT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="orderId != null">
+        #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="beat != null">
+        #{beat,jdbcType=INTEGER},
+      </if>
+      <if test="actualYield != null">
+        #{actualYield,jdbcType=INTEGER},
+      </if>
+      <if test="actualDiff != null">
+        #{actualDiff,jdbcType=INTEGER},
+      </if>
+      <if test="plainStartTime != null">
+        #{plainStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualStartTime != null">
+        #{actualStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="plainEndTime != null">
+        #{plainEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualEndTime != null">
+        #{actualEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="proStatus != null">
+        #{proStatus,jdbcType=CHAR},
+      </if>
+      <if test="planStaffCount != null">
+        #{planStaffCount,jdbcType=INTEGER},
+      </if>
+      <if test="actualStaffCount != null">
+        #{actualStaffCount,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into order_plan_detail (ID, ORDER_ID, BEAT, 
+      ACTUAL_YIELD, ACTUAL_DIFF, PLAIN_START_TIME, 
+      ACTUAL_START_TIME, PLAIN_END_TIME, 
+      ACTUAL_END_TIME, PRO_STATUS, PLAN_STAFF_COUNT, 
+      ACTUAL_STAFF_COUNT)
+    values 
+    <foreach collection="list" index="index" item="item" separator=",">
+      (#{item.id,jdbcType=INTEGER}, #{item.orderId,jdbcType=INTEGER}, #{item.beat,jdbcType=INTEGER}, 
+        #{item.actualYield,jdbcType=INTEGER}, #{item.actualDiff,jdbcType=INTEGER}, #{item.plainStartTime,jdbcType=TIMESTAMP}, 
+        #{item.actualStartTime,jdbcType=TIMESTAMP}, #{item.plainEndTime,jdbcType=TIMESTAMP}, 
+        #{item.actualEndTime,jdbcType=TIMESTAMP}, #{item.proStatus,jdbcType=CHAR}, #{item.planStaffCount,jdbcType=INTEGER}, 
+        #{item.actualStaffCount,jdbcType=INTEGER})
+    </foreach>
+  </insert>
+  <insert id="insertBatchSelective" parameterType="java.util.List">
+    insert into order_plan_detail
+    (ID, ORDER_ID, BEAT, ACTUAL_YIELD, ACTUAL_DIFF, PLAIN_START_TIME, ACTUAL_START_TIME, 
+      PLAIN_END_TIME, ACTUAL_END_TIME, PRO_STATUS, PLAN_STAFF_COUNT, ACTUAL_STAFF_COUNT
+      )
+    values 
+    <foreach collection="list" index="index" item="item" separator=",">
+      <trim prefix="(" suffix=")" suffixOverrides=",">
+        <if test="item.id != null">
+          #{item.id,jdbcType=INTEGER},
+        </if>
+        <if test="item.id == null">
+          NULL,
+        </if>
+        <if test="item.orderId != null">
+          #{item.orderId,jdbcType=INTEGER},
+        </if>
+        <if test="item.orderId == null">
+          NULL,
+        </if>
+        <if test="item.beat != null">
+          #{item.beat,jdbcType=INTEGER},
+        </if>
+        <if test="item.beat == null">
+          NULL,
+        </if>
+        <if test="item.actualYield != null">
+          #{item.actualYield,jdbcType=INTEGER},
+        </if>
+        <if test="item.actualYield == null">
+          NULL,
+        </if>
+        <if test="item.actualDiff != null">
+          #{item.actualDiff,jdbcType=INTEGER},
+        </if>
+        <if test="item.actualDiff == null">
+          NULL,
+        </if>
+        <if test="item.plainStartTime != null">
+          #{item.plainStartTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="item.plainStartTime == null">
+          NULL,
+        </if>
+        <if test="item.actualStartTime != null">
+          #{item.actualStartTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="item.actualStartTime == null">
+          NULL,
+        </if>
+        <if test="item.plainEndTime != null">
+          #{item.plainEndTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="item.plainEndTime == null">
+          NULL,
+        </if>
+        <if test="item.actualEndTime != null">
+          #{item.actualEndTime,jdbcType=TIMESTAMP},
+        </if>
+        <if test="item.actualEndTime == null">
+          NULL,
+        </if>
+        <if test="item.proStatus != null">
+          #{item.proStatus,jdbcType=CHAR},
+        </if>
+        <if test="item.proStatus == null">
+          NULL,
+        </if>
+        <if test="item.planStaffCount != null">
+          #{item.planStaffCount,jdbcType=INTEGER},
+        </if>
+        <if test="item.planStaffCount == null">
+          NULL,
+        </if>
+        <if test="item.actualStaffCount != null">
+          #{item.actualStaffCount,jdbcType=INTEGER},
+        </if>
+        <if test="item.actualStaffCount == null">
+          NULL,
+        </if>
+      </trim>
+    </foreach>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map">
+    update order_plan_detail
+    <set>
+      <if test="record.id != null">
+        ID = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.orderId != null">
+        ORDER_ID = #{record.orderId,jdbcType=INTEGER},
+      </if>
+      <if test="record.beat != null">
+        BEAT = #{record.beat,jdbcType=INTEGER},
+      </if>
+      <if test="record.actualYield != null">
+        ACTUAL_YIELD = #{record.actualYield,jdbcType=INTEGER},
+      </if>
+      <if test="record.actualDiff != null">
+        ACTUAL_DIFF = #{record.actualDiff,jdbcType=INTEGER},
+      </if>
+      <if test="record.plainStartTime != null">
+        PLAIN_START_TIME = #{record.plainStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.actualStartTime != null">
+        ACTUAL_START_TIME = #{record.actualStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.plainEndTime != null">
+        PLAIN_END_TIME = #{record.plainEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.actualEndTime != null">
+        ACTUAL_END_TIME = #{record.actualEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.proStatus != null">
+        PRO_STATUS = #{record.proStatus,jdbcType=CHAR},
+      </if>
+      <if test="record.planStaffCount != null">
+        PLAN_STAFF_COUNT = #{record.planStaffCount,jdbcType=INTEGER},
+      </if>
+      <if test="record.actualStaffCount != null">
+        ACTUAL_STAFF_COUNT = #{record.actualStaffCount,jdbcType=INTEGER},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update order_plan_detail
+    set ID = #{record.id,jdbcType=INTEGER},
+      ORDER_ID = #{record.orderId,jdbcType=INTEGER},
+      BEAT = #{record.beat,jdbcType=INTEGER},
+      ACTUAL_YIELD = #{record.actualYield,jdbcType=INTEGER},
+      ACTUAL_DIFF = #{record.actualDiff,jdbcType=INTEGER},
+      PLAIN_START_TIME = #{record.plainStartTime,jdbcType=TIMESTAMP},
+      ACTUAL_START_TIME = #{record.actualStartTime,jdbcType=TIMESTAMP},
+      PLAIN_END_TIME = #{record.plainEndTime,jdbcType=TIMESTAMP},
+      ACTUAL_END_TIME = #{record.actualEndTime,jdbcType=TIMESTAMP},
+      PRO_STATUS = #{record.proStatus,jdbcType=CHAR},
+      PLAN_STAFF_COUNT = #{record.planStaffCount,jdbcType=INTEGER},
+      ACTUAL_STAFF_COUNT = #{record.actualStaffCount,jdbcType=INTEGER}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.spring.production.entity.OrderPlanDetail">
+    update order_plan_detail
+    <set>
+      <if test="orderId != null">
+        ORDER_ID = #{orderId,jdbcType=INTEGER},
+      </if>
+      <if test="beat != null">
+        BEAT = #{beat,jdbcType=INTEGER},
+      </if>
+      <if test="actualYield != null">
+        ACTUAL_YIELD = #{actualYield,jdbcType=INTEGER},
+      </if>
+      <if test="actualDiff != null">
+        ACTUAL_DIFF = #{actualDiff,jdbcType=INTEGER},
+      </if>
+      <if test="plainStartTime != null">
+        PLAIN_START_TIME = #{plainStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualStartTime != null">
+        ACTUAL_START_TIME = #{actualStartTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="plainEndTime != null">
+        PLAIN_END_TIME = #{plainEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualEndTime != null">
+        ACTUAL_END_TIME = #{actualEndTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="proStatus != null">
+        PRO_STATUS = #{proStatus,jdbcType=CHAR},
+      </if>
+      <if test="planStaffCount != null">
+        PLAN_STAFF_COUNT = #{planStaffCount,jdbcType=INTEGER},
+      </if>
+      <if test="actualStaffCount != null">
+        ACTUAL_STAFF_COUNT = #{actualStaffCount,jdbcType=INTEGER},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.spring.production.entity.OrderPlanDetail">
+    update order_plan_detail
+    set ORDER_ID = #{orderId,jdbcType=INTEGER},
+      BEAT = #{beat,jdbcType=INTEGER},
+      ACTUAL_YIELD = #{actualYield,jdbcType=INTEGER},
+      ACTUAL_DIFF = #{actualDiff,jdbcType=INTEGER},
+      PLAIN_START_TIME = #{plainStartTime,jdbcType=TIMESTAMP},
+      ACTUAL_START_TIME = #{actualStartTime,jdbcType=TIMESTAMP},
+      PLAIN_END_TIME = #{plainEndTime,jdbcType=TIMESTAMP},
+      ACTUAL_END_TIME = #{actualEndTime,jdbcType=TIMESTAMP},
+      PRO_STATUS = #{proStatus,jdbcType=CHAR},
+      PLAN_STAFF_COUNT = #{planStaffCount,jdbcType=INTEGER},
+      ACTUAL_STAFF_COUNT = #{actualStaffCount,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateBatchByPrimaryKey" parameterType="java.util.List">
+    update order_plan_detail
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="ORDER_ID =case " suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.orderId != null">
+            when id = #{item.id} then #{item.orderId}
+          </if>
+          <if test="item.orderId == null">
+            when id = #{item.id} then order_plan_detail.ORDER_ID
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="BEAT =case " suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.beat != null">
+            when id = #{item.id} then #{item.beat}
+          </if>
+          <if test="item.beat == null">
+            when id = #{item.id} then order_plan_detail.BEAT
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="ACTUAL_YIELD =case " suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.actualYield != null">
+            when id = #{item.id} then #{item.actualYield}
+          </if>
+          <if test="item.actualYield == null">
+            when id = #{item.id} then order_plan_detail.ACTUAL_YIELD
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="ACTUAL_DIFF =case " suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.actualDiff != null">
+            when id = #{item.id} then #{item.actualDiff}
+          </if>
+          <if test="item.actualDiff == null">
+            when id = #{item.id} then order_plan_detail.ACTUAL_DIFF
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="PLAIN_START_TIME =case " suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.plainStartTime != null">
+            when id = #{item.id} then #{item.plainStartTime}
+          </if>
+          <if test="item.plainStartTime == null">
+            when id = #{item.id} then order_plan_detail.PLAIN_START_TIME
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="ACTUAL_START_TIME =case " suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.actualStartTime != null">
+            when id = #{item.id} then #{item.actualStartTime}
+          </if>
+          <if test="item.actualStartTime == null">
+            when id = #{item.id} then order_plan_detail.ACTUAL_START_TIME
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="PLAIN_END_TIME =case " suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.plainEndTime != null">
+            when id = #{item.id} then #{item.plainEndTime}
+          </if>
+          <if test="item.plainEndTime == null">
+            when id = #{item.id} then order_plan_detail.PLAIN_END_TIME
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="ACTUAL_END_TIME =case " suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.actualEndTime != null">
+            when id = #{item.id} then #{item.actualEndTime}
+          </if>
+          <if test="item.actualEndTime == null">
+            when id = #{item.id} then order_plan_detail.ACTUAL_END_TIME
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="PRO_STATUS =case " suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.proStatus != null">
+            when id = #{item.id} then #{item.proStatus}
+          </if>
+          <if test="item.proStatus == null">
+            when id = #{item.id} then order_plan_detail.PRO_STATUS
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="PLAN_STAFF_COUNT =case " suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.planStaffCount != null">
+            when id = #{item.id} then #{item.planStaffCount}
+          </if>
+          <if test="item.planStaffCount == null">
+            when id = #{item.id} then order_plan_detail.PLAN_STAFF_COUNT
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="ACTUAL_STAFF_COUNT =case " suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.actualStaffCount != null">
+            when id = #{item.id} then #{item.actualStaffCount}
+          </if>
+          <if test="item.actualStaffCount == null">
+            when id = #{item.id} then order_plan_detail.ACTUAL_STAFF_COUNT
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where ID in 
+    <foreach close=")" collection="list" index="index" item="item" open="(" separator=",">
+       #{item.id} 
+    </foreach>
+  </update>
+  <update id="updateBatchByPrimaryKeySelective" parameterType="java.util.List">
+    update order_plan_detail
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="ORDER_ID =case id" suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.orderId != null ">
+            when  #{item.id} then #{item.orderId}
+          </if>
+          <if test="item.orderId == null ">
+            when  #{item.id} then order_plan_detail.ORDER_ID
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="BEAT =case id" suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.beat != null ">
+            when  #{item.id} then #{item.beat}
+          </if>
+          <if test="item.beat == null ">
+            when  #{item.id} then order_plan_detail.BEAT
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="ACTUAL_YIELD =case id" suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.actualYield != null ">
+            when  #{item.id} then #{item.actualYield}
+          </if>
+          <if test="item.actualYield == null ">
+            when  #{item.id} then order_plan_detail.ACTUAL_YIELD
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="ACTUAL_DIFF =case id" suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.actualDiff != null ">
+            when  #{item.id} then #{item.actualDiff}
+          </if>
+          <if test="item.actualDiff == null ">
+            when  #{item.id} then order_plan_detail.ACTUAL_DIFF
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="PLAIN_START_TIME =case id" suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.plainStartTime != null ">
+            when  #{item.id} then #{item.plainStartTime}
+          </if>
+          <if test="item.plainStartTime == null ">
+            when  #{item.id} then order_plan_detail.PLAIN_START_TIME
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="ACTUAL_START_TIME =case id" suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.actualStartTime != null ">
+            when  #{item.id} then #{item.actualStartTime}
+          </if>
+          <if test="item.actualStartTime == null ">
+            when  #{item.id} then order_plan_detail.ACTUAL_START_TIME
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="PLAIN_END_TIME =case id" suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.plainEndTime != null ">
+            when  #{item.id} then #{item.plainEndTime}
+          </if>
+          <if test="item.plainEndTime == null ">
+            when  #{item.id} then order_plan_detail.PLAIN_END_TIME
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="ACTUAL_END_TIME =case id" suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.actualEndTime != null ">
+            when  #{item.id} then #{item.actualEndTime}
+          </if>
+          <if test="item.actualEndTime == null ">
+            when  #{item.id} then order_plan_detail.ACTUAL_END_TIME
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="PRO_STATUS =case id" suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.proStatus != null ">
+            when  #{item.id} then #{item.proStatus}
+          </if>
+          <if test="item.proStatus == null ">
+            when  #{item.id} then order_plan_detail.PRO_STATUS
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="PLAN_STAFF_COUNT =case id" suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.planStaffCount != null ">
+            when  #{item.id} then #{item.planStaffCount}
+          </if>
+          <if test="item.planStaffCount == null ">
+            when  #{item.id} then order_plan_detail.PLAN_STAFF_COUNT
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="ACTUAL_STAFF_COUNT =case id" suffix="end,">
+        <foreach collection="list" index="index" item="item" separator=" ">
+          <if test="item.actualStaffCount != null ">
+            when  #{item.id} then #{item.actualStaffCount}
+          </if>
+          <if test="item.actualStaffCount == null ">
+            when  #{item.id} then order_plan_detail.ACTUAL_STAFF_COUNT
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    where ID in 
+    <foreach close=")" collection="list" index="index" item="item" open="(" separator=",">
+       #{item.id} 
+    </foreach>
+  </update>
+  <update id="updateBatchByExample" parameterType="map">
+    update order_plan_detail
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="orderId =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          when  #{item.id} then #{item.orderId}
+        </foreach>
+      </trim>
+      <trim prefix="beat =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          when  #{item.id} then #{item.beat}
+        </foreach>
+      </trim>
+      <trim prefix="actualYield =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          when  #{item.id} then #{item.actualYield}
+        </foreach>
+      </trim>
+      <trim prefix="actualDiff =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          when  #{item.id} then #{item.actualDiff}
+        </foreach>
+      </trim>
+      <trim prefix="plainStartTime =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          when  #{item.id} then #{item.plainStartTime}
+        </foreach>
+      </trim>
+      <trim prefix="actualStartTime =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          when  #{item.id} then #{item.actualStartTime}
+        </foreach>
+      </trim>
+      <trim prefix="plainEndTime =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          when  #{item.id} then #{item.plainEndTime}
+        </foreach>
+      </trim>
+      <trim prefix="actualEndTime =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          when  #{item.id} then #{item.actualEndTime}
+        </foreach>
+      </trim>
+      <trim prefix="proStatus =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          when  #{item.id} then #{item.proStatus}
+        </foreach>
+      </trim>
+      <trim prefix="planStaffCount =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          when  #{item.id} then #{item.planStaffCount}
+        </foreach>
+      </trim>
+      <trim prefix="actualStaffCount =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          when  #{item.id} then #{item.actualStaffCount}
+        </foreach>
+      </trim>
+    </trim>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateBatchByExampleSelective" parameterType="map">
+    update order_plan_detail
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="orderId =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          <if test="item.orderId != null ">
+            when  #{item.id} then #{item.orderId}
+          </if>
+          <if test="item.orderId == null ">
+            when  #{item.id} then order_plan_detail.ORDER_ID
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="beat =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          <if test="item.beat != null ">
+            when  #{item.id} then #{item.beat}
+          </if>
+          <if test="item.beat == null ">
+            when  #{item.id} then order_plan_detail.BEAT
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="actualYield =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          <if test="item.actualYield != null ">
+            when  #{item.id} then #{item.actualYield}
+          </if>
+          <if test="item.actualYield == null ">
+            when  #{item.id} then order_plan_detail.ACTUAL_YIELD
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="actualDiff =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          <if test="item.actualDiff != null ">
+            when  #{item.id} then #{item.actualDiff}
+          </if>
+          <if test="item.actualDiff == null ">
+            when  #{item.id} then order_plan_detail.ACTUAL_DIFF
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="plainStartTime =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          <if test="item.plainStartTime != null ">
+            when  #{item.id} then #{item.plainStartTime}
+          </if>
+          <if test="item.plainStartTime == null ">
+            when  #{item.id} then order_plan_detail.PLAIN_START_TIME
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="actualStartTime =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          <if test="item.actualStartTime != null ">
+            when  #{item.id} then #{item.actualStartTime}
+          </if>
+          <if test="item.actualStartTime == null ">
+            when  #{item.id} then order_plan_detail.ACTUAL_START_TIME
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="plainEndTime =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          <if test="item.plainEndTime != null ">
+            when  #{item.id} then #{item.plainEndTime}
+          </if>
+          <if test="item.plainEndTime == null ">
+            when  #{item.id} then order_plan_detail.PLAIN_END_TIME
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="actualEndTime =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          <if test="item.actualEndTime != null ">
+            when  #{item.id} then #{item.actualEndTime}
+          </if>
+          <if test="item.actualEndTime == null ">
+            when  #{item.id} then order_plan_detail.ACTUAL_END_TIME
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="proStatus =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          <if test="item.proStatus != null ">
+            when  #{item.id} then #{item.proStatus}
+          </if>
+          <if test="item.proStatus == null ">
+            when  #{item.id} then order_plan_detail.PRO_STATUS
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="planStaffCount =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          <if test="item.planStaffCount != null ">
+            when  #{item.id} then #{item.planStaffCount}
+          </if>
+          <if test="item.planStaffCount == null ">
+            when  #{item.id} then order_plan_detail.PLAN_STAFF_COUNT
+          </if>
+        </foreach>
+      </trim>
+      <trim prefix="actualStaffCount =case id" suffix="end,">
+        <foreach collection="recordList" index="index" item="item" separator=" ">
+          <if test="item.actualStaffCount != null ">
+            when  #{item.id} then #{item.actualStaffCount}
+          </if>
+          <if test="item.actualStaffCount == null ">
+            when  #{item.id} then order_plan_detail.ACTUAL_STAFF_COUNT
+          </if>
+        </foreach>
+      </trim>
+    </trim>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+</mapper>

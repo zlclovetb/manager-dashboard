@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+  <!-- 驱动包（数据库的jar包） -->
+  <classPathEntry
+    location="E:\.m2\repository\mysql\mysql-connector-java\5.1.45\mysql-connector-java-5.1.45.jar" />
+
+  <!-- targetRuntime�?发环境使用的mybatis的版�? -->
+  <context id="SqlserverTables" targetRuntime="MyBatis3">
+    <!-- 分页插件 -->
+    <!-- <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"></plugin> -->
+    <plugin type="org.mybatis.generator.plugins.SerializablePlugin"></plugin>
+    <plugin type="com.paradm.mybatis.plugins.BaseMapperGeneratorPlugin">
+      <!-- 继承自已写的BaseMapper -->
+      <!-- <property name="mappers" value="com.paradm.base.dao.BaseMapper"/> -->
+      <property name="enableAnnotation" value="TRUE"/>
+      
+      <!-- 程序生成BaseMapper -->
+      <property name="interfaceName" value="BaseMapper"/>
+      <property name="interfacePack" value="com.spring.production.dao"/>
+    </plugin>
+    <!-- <plugin type="com.paradm.mybatis.plugins.RenameExampleClassPlugin">
+      <property name="searchString" value="Example"/>
+      <property name="replaceString" value="Criteria"/>
+    </plugin> -->
+    <plugin type="com.paradm.mybatis.plugins.GenBatisServicePlugin">
+      <property name="enableAnnotation" value="TRUE"/>
+      <property name="enableInsertBatchSelective" value="TRUE"/>
+      <property name="enableInsertSelective" value="TRUE"/>
+      <property name="enableOperatorBLOBs" value="TRUE"/>
+      <property name="enableUpdateByExampleSelective" value="TRUE"/>
+      <property name="enableUpdateBatchByPrimaryKeySelective" value="TRUE"/>
+      <property name="enableUpdateByPrimaryKeySelective" value="TRUE"/>
+      
+      <property name="targetPackage" value="com.spring.production.service"/>
+      <property name="implementationPackage" value="com.spring.production.service.impl"/>
+      <property name="targetProject" value="src/main/java"/>
+      
+    </plugin>
+    
+    <!-- 中文注释 -->
+    <!-- <commentGenerator type="com.paradm.mybatis.generators.ChineseCommentGenerator"></commentGenerator> -->
+    <!-- <commentGenerator type="com.paradm.mybatis.generators.GenCommentGenerator"></commentGenerator> -->
+    <commentGenerator type="com.paradm.mybatis.generators.DefaultCommentGenerator">
+      <property name="addRemarkComments" value="TRUE"/>
+    </commentGenerator>
+    <!-- <commentGenerator>
+      <property name="suppressAllComments" value="true" />
+      <property name="suppressDate" value="true" />
+    </commentGenerator> -->
+
+    <!-- 连接数据库的四要�? -->
+    <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+      connectionURL="jdbc:mysql://192.168.23.10:3306/production?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true"
+      userId="root" password="password">
+      <property name="useInformationSchema" value="true"></property>
+    </jdbcConnection>
+    
+    <javaTypeResolver>
+      <property name="forceBigDecimals" value="false" />
+    </javaTypeResolver>
+
+    <!-- 实体�? bean 带有get和set方法的bean -->
+    <javaModelGenerator targetPackage="com.spring.production.entity"
+      targetProject="src/main/java">
+      <property name="enableSubPackages" value="true" />
+      <property name="trimStrings" value="true" />
+      <!-- <property name="rootClass" value="com.paradm.base.entity.BaseEntity"/> -->
+    </javaModelGenerator>
+
+    <!-- sql语句相关的xml或�?�注解的生成包路�? -->
+    <sqlMapGenerator targetPackage="mapper"
+      targetProject="resources">
+      <property name="enableSubPackages" value="true" />
+    </sqlMapGenerator>
+
+    <!-- 生成的接口所在的位置 注解 type="ANNOTATEDMAPPER" xml type="XMLMAPPER" -->
+    <javaClientGenerator type="XMLMAPPER"
+      targetPackage="com.spring.production.dao" targetProject="src/main/java">
+      <property name="enableSubPackages" value="true" />
+    </javaClientGenerator>
+
+    <!-- 数据库名 -->
+    <!-- <table tableName="DMS_DOCUMENT">
+    </table> -->
+
+    <table tableName="order_plan"
+      enableCountByExample="false" enableUpdateByExample="true"
+      enableDeleteByExample="false" enableSelectByExample="true"
+      selectByExampleQueryId="false">
+      <generatedKey column="id" sqlStatement="MySql" identity="true" />
+    </table>
+
+  </context>
+</generatorConfiguration>
