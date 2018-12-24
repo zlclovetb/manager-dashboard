@@ -1,12 +1,22 @@
 <!DOCTYPE html>
 <html>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%
+  String path = request.getContextPath();
+%>
 <head>
-<link href="./css/bootstrap.min.css" rel="stylesheet">
-<script type="text/javascript" src="./js/jquery.min.js"></script>
-<script type="text/javascript" src="./js/bootstrap.min.js"></script>
-<script type="text/javascript" src="./js/Chart.min.js"></script>
-<script type="text/javascript" src="./js/Chart.bundle.min.js"></script>
+<link href="<%=path %>/css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript" src="<%=path %>/js/jquery.min.js"></script>
+<script type="text/javascript" src="<%=path %>/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="<%=path %>/js/Chart.min.js"></script>
+<script type="text/javascript" src="<%=path %>/js/Chart.bundle.min.js"></script>
+<script type="text/javascript">
+	var labels = new Array();
+	var planDatas = new Array();
+	var actualDatas = new Array();
+	var achRateDatas = new Array();
+</script>
 <style type="text/css">
 .div1 {
 	margin-bottom: 10px;
@@ -18,11 +28,11 @@
 </style>
 </head>
 <body style="background-color: #404040;">
-	<div class="col-sm-12 col-lg-12 main" style="color: hsla(0,0%,100%,.8);font-size: 20px;">			
+	<div class="col-sm-12 col-lg-12 main" style="color: hsla(0,0%,100%,.8);font-size: 18px;">			
 		<div class="row">
 			<div class="col-lg-12">
 				<div class="div1">
-					<table class="table table-bordered" style="background-color: #404040;">
+					<table id="tTable" class="table table-bordered" style="background-color: #404040;">
 						<caption style="color: hsla(0,0%,100%,.8)">今日生产计划</caption>
 						<thead>
 							<tr>
@@ -36,33 +46,23 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td>1</td>
-								<td class="td-blue">20110210-45878</td>
-								<td>LU60CY(改进型)</td>
-								<td class="td-blue">88888</td>
-								<td class="td-blue">88888</td>
-								<td class="td-blue">88888</td>
-								<td>100%</td>
-							</tr>
-							<tr>
-								<td>2</td>
-								<td class="td-blue">20110210-45878</td>
-								<td>QD100YU(俄罗斯VESTEL)</td>
-								<td class="td-blue">88888</td>
-								<td class="td-blue">88888</td>
-								<td class="td-blue">88888</td>
-								<td>100%</td>
-							</tr>
-							<tr>
-								<td>3</td>
-								<td class="td-blue">20110210-45878</td>
-								<td>E1116CZ-意大利CARPIGIANI公司</td>
-								<td class="td-blue">88888</td>
-								<td class="td-blue">88888</td>
-								<td class="td-blue">88888</td>
-								<td>100%</td>
-							</tr>
+							<c:forEach items="${tDataList }" var="order" varStatus="status">
+								<tr>
+									<td>${status.index+1}</td>
+									<td>${order.orderName }</td>
+									<td>${order.proName }</td>
+									<td><c:if test="${not empty order.planCount }">${order.planCount }</c:if><c:if test="${empty order.planCount }">-</c:if></td>
+									<td><c:if test="${not empty order.actualCount }">${order.actualCount }</c:if><c:if test="${empty order.actualCount }">-</c:if></td>
+									<td><c:if test="${not empty order.diffCount }">${order.diffCount }</c:if><c:if test="${empty order.diffCount }">-</c:if></td>
+									<td><c:if test="${not empty order.achRate }">${order.achRate }%</c:if><c:if test="${empty order.achRate }">-</c:if></td>
+								</tr>
+								<script type="text/javascript">
+									labels.push('${order.proName }');
+									planDatas.push('${order.planCount }');
+									actualDatas.push('${order.actualCount }');
+									achRateDatas.push('${order.achRate }');
+								</script>
+							</c:forEach>
 						</tbody>
 					</table>
 				</div>
@@ -72,7 +72,7 @@
 		<div class="row">
 			<div class="col-lg-12">
 				<div>
-					<table class="table table-bordered">
+					<table id="sTable" class="table table-bordered">
 						<caption style="color: hsla(0,0%,100%,.8)">明日生产计划</caption>
 						<thead>
 							<tr>
@@ -86,33 +86,17 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td>1</td>
-								<td class="td-blue">20110210-45878</td>
-								<td>E1116CZ-意大利CARPIGIANI公司</td>
-								<td class="td-blue">88888</td>
-								<td class="td-blue">88888</td>
-								<td class="td-blue">88888</td>
-								<td>100%</td>
-							</tr>
-							<tr>
-								<td>2</td>
-								<td class="td-blue">20110210-45878</td>
-								<td>W25EZ-黎巴嫩HCRROUT</td>
-								<td class="td-blue">88888</td>
-								<td class="td-blue">88888</td>
-								<td class="td-blue">88888</td>
-								<td>100%</td>
-							</tr>
-							<tr>
-								<td>3</td>
-								<td class="td-blue">20110210-45878</td>
-								<td>LK76CVB-A(15位数字)</td>
-								<td class="td-blue">88888</td>
-								<td class="td-blue">88888</td>
-								<td class="td-blue">88888</td>
-								<td>100%</td>
-							</tr>
+							<c:forEach items="${sDataList }" var="order" varStatus="status">
+								<tr>
+									<td>${status.index+1}</td>
+									<td>${order.orderName }</td>
+									<td>${order.proName }</td>
+									<td><c:if test="${not empty order.planCount }">${order.planCount }</c:if><c:if test="${empty order.planCount }">-</c:if></td>
+									<td><c:if test="${not empty order.actualCount }">${order.actualCount }</c:if><c:if test="${empty order.actualCount }">-</c:if></td>
+									<td><c:if test="${not empty order.diffCount }">${order.diffCount }</c:if><c:if test="${empty order.diffCount }">-</c:if></td>
+									<td><c:if test="${not empty order.achRate }">${order.achRate }%</c:if><c:if test="${empty order.achRate }">-</c:if></td>
+								</tr>
+							</c:forEach>
 						</tbody>
 					</table>
 				</div>
@@ -125,7 +109,7 @@
 					<!-- <div class="panel-heading">Bar Chart</div> -->
 					<div class="panel-body">
 						<div class="canvas-wrapper">
-							<canvas class="chart" id="bar-chart" style="background-color: #404040;" height="130px"></canvas>
+							<canvas class="chart" id="bar-chart" style="background-color: #404040;"></canvas>
 						</div>
 					</div>
 				</div>
@@ -135,7 +119,7 @@
 					<!-- <div class="panel-heading">Doughnut Chart</div> -->
 					<div class="panel-body">
 						<div class="canvas-wrapper">
-							<canvas class="chart" id="line-chart" style="background-color: #404040;" height="130px"></canvas>
+							<canvas class="chart" id="line-chart" style="background-color: #404040;"></canvas>
 						</div>
 					</div>
 				</div>
@@ -143,6 +127,12 @@
 		</div><!--/.row-->
 	</div>
 	<script type="text/javascript">
+	console.log('jQuery(document).height()' + jQuery(document).height());
+	console.log('$("#sTable").offset().top' + $("#sTable").offset().top);
+	console.log('$("#sTable").height()' + $("#sTable").height());
+	console.log(jQuery(document).height() - $("#sTable").offset().top - $("#sTable").height() -200);
+	//document.getElementById("bar-chart").height = jQuery(document).height() - $("#sTable").offset().top - $("#sTable").height() -200 + 25;
+	//document.getElementById("line-chart").height = jQuery(document).height() - $("#sTable").offset().top - $("#sTable").height() -200;
 	window.chartColors = {
 		red: 'rgb(255, 99, 132)',
 		orange: 'rgb(255, 159, 64)',
@@ -158,19 +148,19 @@
 	//Chart.defaults.global.scaleGridLineColor = 'rgba(0,0,0,.05)';
 	var ctx = document.getElementById("bar-chart").getContext('2d');
 	var color = Chart.helpers.color;
-	var myChart = new Chart(ctx, {
+	var barChart = new Chart(ctx, {
 	    type: 'bar',
 	    data: {
-	        labels: ["LU60CY(改进型)", "QD100YU(俄罗斯VESTEL)", "E1116CZ-意大利CARPIGIANI公司"],
+	        labels: labels,
 	        datasets: [{
 	            label: '计划数据',
-	            data: [800, 1900, 300],
+	            data: planDatas,
 	            backgroundColor: window.chartColors.red,
 				borderColor: window.chartColors.red
 	        },
 	        {
 	            label: '达成数据',
-	            data: [810, 1800, 300],
+	            data: actualDatas,
 	            backgroundColor: window.chartColors.blue,
 				borderColor: window.chartColors.blue
 	        }
@@ -216,7 +206,7 @@
                         var meta = chartInstance.controller.getDatasetMeta(i);
                         meta.data.forEach(function (bar, index) {
                             var data = dataset.data[index];
-                            ctx.fillText(data, bar._model.x, bar._model.y - 5);
+                            ctx.fillText(data, bar._model.x, bar._model.y + 15);
                         });
                     });
                 }
@@ -225,13 +215,13 @@
 	});
 	
 	var ctx = document.getElementById("line-chart").getContext('2d');
-	var myChart = new Chart(ctx, {
+	var lineChart = new Chart(ctx, {
 	    type: 'line',
 	    data: {
-	    	labels: ["LU60CY(改进型)", "QD100YU(俄罗斯VESTEL)", "E1116CZ-意大利CARPIGIANI公司"],
+	    	labels: labels,
 	        datasets: [{
 	            label: '达成率',
-	            data: [90, 50, 110],
+	            data: achRateDatas,
 	            backgroundColor: window.chartColors.orange,
 				borderColor: window.chartColors.orange,
 				fill: false
@@ -284,13 +274,14 @@
                         var meta = chartInstance.controller.getDatasetMeta(i);
                         meta.data.forEach(function (bar, index) {
                             var data = dataset.data[index];
-                            ctx.fillText(data, bar._model.x, bar._model.y - 5);
+                            ctx.fillText(data, bar._model.x, bar._model.y + 20);
                         });
                     });
                 }
             }
 	    }
 	});
+	console.log("barChart.height" + barChart.height);
 	</script>
 	</script>
 </body>

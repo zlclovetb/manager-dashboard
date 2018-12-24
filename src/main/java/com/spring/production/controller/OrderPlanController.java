@@ -2,6 +2,7 @@ package com.spring.production.controller;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,10 +38,26 @@ public class OrderPlanController {
     return "orderPlan";
   }
   
-  @RequestMapping(path="insert", method=RequestMethod.POST)
+  /*@RequestMapping(path="insert", method=RequestMethod.POST)
   public String insert(Model model, OrderPlan orderPlan) {
     orderPlanService.insert(orderPlan);
     return "redirect:/orderPlan/toList"; 
+  }*/
+  
+  @RequestMapping(path="insert", method=RequestMethod.POST)
+  public @ResponseBody Map<String,Object> addOrder(OrderPlan orderPlan) {
+    orderPlanService.insert(orderPlan);
+    Map<String, Object> map = new HashMap<String, Object>();
+    map.put("state", "success");
+    return map;
+  }
+  
+  @RequestMapping(path="update", method=RequestMethod.POST)
+  public @ResponseBody Map<String,Object> updOrder(OrderPlan orderPlan) {
+    orderPlanService.updateByPrimaryKey(orderPlan);
+    Map<String, Object> map = new HashMap<String, Object>();
+    map.put("state", "success");
+    return map;
   }
   
   @RequestMapping(path="toList", method=RequestMethod.GET)
@@ -139,7 +156,7 @@ public class OrderPlanController {
     return map; 
   }
   
-  @RequestMapping("/deleteOrder")
+  @RequestMapping("/delete")
   public @ResponseBody Map<String,Object> deleteOrder(HttpServletRequest request) {
     String[] list = request.getParameterValues("ids");
     for (int i = 0; i < list.length; i++) {
@@ -151,6 +168,35 @@ public class OrderPlanController {
     Map<String, Object> map = new HashMap<String, Object>();
     map.put("state", "success");
     return map;
+  }
+  
+  @RequestMapping(path="toDashboard", method=RequestMethod.GET)
+  public String searchDashBoardList(Model model) {
+    OrderPlanExample example = new OrderPlanExample();
+    Criteria criteria = example.createCriteria();
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    try {
+      Date date = simpleDateFormat.parse(simpleDateFormat.format(new Date()));
+      criteria.andProDateEqualTo(date);
+    } catch (ParseException e) {
+    }
+    List<OrderPlan> orderPlanlist = orderPlanService.selectByExample(example);
+    
+    Calendar cal=Calendar.getInstance();
+    cal.add(Calendar.DATE, 1);
+    Date sDate=cal.getTime();
+    OrderPlanExample sExample = new OrderPlanExample();
+    Criteria sCriteria = sExample.createCriteria();
+    try {
+      Date date = simpleDateFormat.parse(simpleDateFormat.format(sDate));
+      sCriteria.andProDateEqualTo(date);
+    } catch (ParseException e) {
+    }
+    List<OrderPlan> sOrderPlanlist = orderPlanService.selectByExample(sExample);
+
+    model.addAttribute("tDataList", orderPlanlist);
+    model.addAttribute("sDataList", sOrderPlanlist);
+    return "index"; 
   }
   
   @InitBinder
