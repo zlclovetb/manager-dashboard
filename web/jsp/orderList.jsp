@@ -25,7 +25,7 @@
 <body>
 	<div>
 		<div id="showtime" style="margin-left: 5px; font-family: Microsoft YaHei; font-size: 20px;"></div>
-		<!-- <div style="color: red; text-align: center; margin-top: 20px; font-size: 40px;">生产管理</div> -->
+		<div style="text-align: center; margin-top: 20px; font-size: 40px;">生产管理</div>
 		<div id="searchBar" class="col-sm-12 col-lg-12">
 			<div class="row">
 				<div class="col-lg-12">
