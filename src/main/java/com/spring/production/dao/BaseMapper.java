@@ -2,7 +2,6 @@ package com.spring.production.dao;
 
 import java.io.Serializable;
 import java.util.List;
-
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -13,7 +12,7 @@ import org.apache.ibatis.annotations.Param;
  *
  * @author spring
  *         github: https://github.com/zlc_tb
- *         date: 2018-12-21 18:48:00
+ *         date: 2018-12-28 15:02:43
  */
 public interface BaseMapper<T, E, PK extends Serializable> {
     /** 
@@ -73,6 +72,13 @@ public interface BaseMapper<T, E, PK extends Serializable> {
     List<T> selectByExampleWithBLOBs(E example);
 
     /** 
+     *
+     * @param example 条件对象
+     * @return 返回查询的结果
+     */
+    List<T> selectByExampleWithoutBLOBs(E example);
+
+    /** 
      * 根据条件查询（二进制大对象）
      * @param example 条件对象
      * @return 返回查询的结果
@@ -99,6 +105,13 @@ public interface BaseMapper<T, E, PK extends Serializable> {
      * @return 返回更新成功的数量
      */
     int updateByPrimaryKeyWithBLOBs(T record);
+
+    /** 
+     *
+     * @param record 修改字段对象(必须含ID）
+     * @return 返回更新成功的数量
+     */
+    int updateByPrimaryKeyWithoutBLOBs(T record);
 
     /** 
      * 根据ID修改所有字段(必须含ID）
@@ -130,6 +143,14 @@ public interface BaseMapper<T, E, PK extends Serializable> {
      * @return 返回更新成功的数量
      */
     int updateByExampleWithBLOBs(@Param("record") T record, @Param("example") E example);
+
+    /** 
+     *
+     * @param record 修改字段对象(必须含ID）
+     * @param example 条件对象
+     * @return 返回更新成功的数量
+     */
+    int updateByExampleWithoutBLOBs(@Param("record") T record, @Param("example") E example);
 
     /** 
      * 根据主键，批量更新

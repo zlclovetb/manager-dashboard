@@ -22,16 +22,21 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.spring.production.ProductionConstant;
 import com.spring.production.entity.OrderPlan;
 import com.spring.production.entity.OrderPlanExample;
 import com.spring.production.entity.OrderPlanExample.Criteria;
 import com.spring.production.service.OrderPlanService;
+import com.spring.production.tools.TodayOrderCache;
+import com.spring.production.tools.ToolUtility;
 
 @Controller
 @RequestMapping("/orderPlan")
 public class OrderPlanController {
   @Autowired
   protected OrderPlanService orderPlanService;
+  @Autowired
+  protected TodayOrderCache todayOrderCache;
   
   @RequestMapping(path="toInsert", method=RequestMethod.GET)
   public String toInsert(Model model) {
@@ -47,6 +52,7 @@ public class OrderPlanController {
   @RequestMapping(path="insert", method=RequestMethod.POST)
   public @ResponseBody Map<String,Object> addOrder(OrderPlan orderPlan) {
     orderPlanService.insert(orderPlan);
+    todayOrderCache.fireCache();
     Map<String, Object> map = new HashMap<String, Object>();
     map.put("state", "success");
     return map;
@@ -55,6 +61,7 @@ public class OrderPlanController {
   @RequestMapping(path="update", method=RequestMethod.POST)
   public @ResponseBody Map<String,Object> updOrder(OrderPlan orderPlan) {
     orderPlanService.updateByPrimaryKey(orderPlan);
+    todayOrderCache.fireCache();
     Map<String, Object> map = new HashMap<String, Object>();
     map.put("state", "success");
     return map;
@@ -124,6 +131,7 @@ public class OrderPlanController {
     return "orderList"; 
   }
   
+  @SuppressWarnings("rawtypes")
   @RequestMapping(path="getPageInfo", method=RequestMethod.POST)
   public @ResponseBody Map<String,Object> searchFilterList(Model model, String orderName, String proName, String proDate , int limit,int offset) {
     OrderPlanExample example = new OrderPlanExample();
@@ -164,7 +172,24 @@ public class OrderPlanController {
       Integer orderID = Integer.valueOf(id);
       orderPlanService.deleteByPrimaryKey(orderID);
     }
-
+    todayOrderCache.fireCache();
+    Map<String, Object> map = new HashMap<String, Object>();
+    map.put("state", "success");
+    return map;
+  }
+  
+  @RequestMapping("/complete")
+  public @ResponseBody Map<String,Object> completeOrder(HttpServletRequest request) {
+    String[] list = request.getParameterValues("ids");
+    for (int i = 0; i < list.length; i++) {
+      String id = list[i];
+      Integer orderID = Integer.valueOf(id);
+      OrderPlan orderPlan = new OrderPlan();
+      orderPlan.setId(orderID);
+      orderPlan.setProStatus(ProductionConstant.PRODUCTION_STATUS_COMPLETE);
+      orderPlanService.updateByPrimaryKeySelective(orderPlan);
+    }
+    todayOrderCache.fireCache();
     Map<String, Object> map = new HashMap<String, Object>();
     map.put("state", "success");
     return map;
@@ -173,25 +198,22 @@ public class OrderPlanController {
   @RequestMapping(path="toDashboard", method=RequestMethod.GET)
   public String searchDashBoardList(Model model) {
     OrderPlanExample example = new OrderPlanExample();
+    example.setOrderByClause("'PRO_DATE' ASC");
     Criteria criteria = example.createCriteria();
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    try {
-      Date date = simpleDateFormat.parse(simpleDateFormat.format(new Date()));
-      criteria.andProDateEqualTo(date);
-    } catch (ParseException e) {
-    }
+    Date startTime = ToolUtility.getStartTime(null);
+    Date endTime = ToolUtility.getEndTime(null);
+    criteria.andProDateBetween(startTime, endTime);
     List<OrderPlan> orderPlanlist = orderPlanService.selectByExample(example);
     
     Calendar cal=Calendar.getInstance();
     cal.add(Calendar.DATE, 1);
     Date sDate=cal.getTime();
     OrderPlanExample sExample = new OrderPlanExample();
+    sExample.setOrderByClause("'PRO_DATE' ASC");
     Criteria sCriteria = sExample.createCriteria();
-    try {
-      Date date = simpleDateFormat.parse(simpleDateFormat.format(sDate));
-      sCriteria.andProDateEqualTo(date);
-    } catch (ParseException e) {
-    }
+    Date startTime1 = ToolUtility.getStartTime(sDate);
+    Date endTime1 = ToolUtility.getEndTime(sDate);
+    sCriteria.andProDateBetween(startTime1, endTime1);
     List<OrderPlan> sOrderPlanlist = orderPlanService.selectByExample(sExample);
 
     model.addAttribute("tDataList", orderPlanlist);
@@ -201,7 +223,7 @@ public class OrderPlanController {
   
   @InitBinder
   protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) {
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
     simpleDateFormat.setLenient(false);
     CustomDateEditor dateEditor = new CustomDateEditor(simpleDateFormat, true);
     binder.registerCustomEditor(Date.class, dateEditor);

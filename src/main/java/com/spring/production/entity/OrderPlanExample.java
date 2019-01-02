@@ -722,6 +722,76 @@ public class OrderPlanExample {
             addCriterion("PROPERTIE not between", value1, value2, "propertie");
             return (Criteria) this;
         }
+
+        public Criteria andProStatusIsNull() {
+            addCriterion("PRO_STATUS is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andProStatusIsNotNull() {
+            addCriterion("PRO_STATUS is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andProStatusEqualTo(String value) {
+            addCriterion("PRO_STATUS =", value, "proStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andProStatusNotEqualTo(String value) {
+            addCriterion("PRO_STATUS <>", value, "proStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andProStatusGreaterThan(String value) {
+            addCriterion("PRO_STATUS >", value, "proStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andProStatusGreaterThanOrEqualTo(String value) {
+            addCriterion("PRO_STATUS >=", value, "proStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andProStatusLessThan(String value) {
+            addCriterion("PRO_STATUS <", value, "proStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andProStatusLessThanOrEqualTo(String value) {
+            addCriterion("PRO_STATUS <=", value, "proStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andProStatusLike(String value) {
+            addCriterion("PRO_STATUS like", value, "proStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andProStatusNotLike(String value) {
+            addCriterion("PRO_STATUS not like", value, "proStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andProStatusIn(List<String> values) {
+            addCriterion("PRO_STATUS in", values, "proStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andProStatusNotIn(List<String> values) {
+            addCriterion("PRO_STATUS not in", values, "proStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andProStatusBetween(String value1, String value2) {
+            addCriterion("PRO_STATUS between", value1, value2, "proStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andProStatusNotBetween(String value1, String value2) {
+            addCriterion("PRO_STATUS not between", value1, value2, "proStatus");
+            return (Criteria) this;
+        }
     }
 
     /**

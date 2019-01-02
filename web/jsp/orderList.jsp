@@ -107,6 +107,7 @@
 						<button type="button" id="saveBtn" class="btn btn-default">新增生产计划</button>
 						<button type="button" id="editBtn" class="btn btn-default">修改生产计划</button>
 						<button type="button" id="delBtn" class="btn btn-default">删除生产计划</button>
+						<button type="button" id="comBtn" class="btn btn-default">完成生产计划</button>
 					</div>
 				</div>
 			</div>
@@ -147,12 +148,12 @@
 						<div class="row">
 							<div class="col-lg-6">
 								<div>
-									<label for="name">差异数</label> <input type="number" id="diffCount" name="diffCount" class="form-control" placeholder="计划生产数">
+									<label for="name">差异数</label> <input type="number" id="diffCount" name="diffCount" class="form-control"  placeholder="计划生产数" readonly>
 								</div>
 							</div>
 							<div class="col-lg-6">
 								<div>
-									<label for="name">达成率</label> <input type="text" name="achRate" id="achRate" class="form-control" placeholder="实际生产数">
+									<label for="name">达成率</label> <input type="text" name="achRate" id="achRate" class="form-control" placeholder="实际生产数" readonly>
 								</div>
 							</div>
 						</div>
@@ -167,12 +168,55 @@
 		</div>
 		<!-- /.modal -->
 	</div>
+	
+	<!-- 模态框（Modal） -->
+	<div class="modal fade" id="delModal" tabindex="-1" role="dialog" aria-labelledby="delModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						&times;
+					</button>
+					<h4 class="modal-title" id="delModalLabel">
+						删除订单生产计划
+					</h4>
+				</div>
+				<div class="modal-body">
+					你确定要删除选中的订单生产计划吗？
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" id="comDelBtn">提交</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
 	<script type="text/javascript">
 		$("#s_proDate").datetimepicker({
 			format : "YYYY-MM-DD"
 		});
 		$("#proDate").datetimepicker({
-			format : "YYYY-MM-DD"
+			format : "YYYY-MM-DD HH:mm:ss"
+		});
+		$('#planCount').bind('input propertychange', function(e){
+			if($(this).val() && $('#actualCount').val()){
+				$("#diffCount").val(Math.abs($(this).val() - $('#actualCount').val()));
+				var achRate = ($('#actualCount').val() / $(this).val()) * 100;
+				$("#achRate").val(achRate.toFixed(2));
+			} else {
+				$("#diffCount").val('');
+				$("#achRate").val('');
+			}
+		});
+		$('#actualCount').bind('input propertychange', function(e){
+			if($(this).val() && $('#planCount').val()){
+				$("#diffCount").val(Math.abs($('#planCount').val() - $(this).val()));
+				var achRate = ($(this).val() / $('#planCount').val()) * 100;
+				$("#achRate").val(achRate.toFixed(2));
+			} else {
+				$("#diffCount").val('');
+				$("#achRate").val('');
+			}
 		});
 		$('#saveBtn').on('click', function(){
 			$("#myModal").modal('show');
@@ -199,13 +243,13 @@
 					}
 				});
 			})
-		})
+		});
 		$('#searchBtm').on('click', function(){
 			$("#mytab").bootstrapTable("refresh");
 			if($('#s_orderName').val() !=null || $('#s_proName').val() !=null || $('#s_proDate').val() !=null ) {
 				$('#collapseThree').collapse('show');
 			}
-		})
+		});
 		$('#clearBtn').on('click', function(){
 			$("#s_orderName").val('');
 			$("#s_proName").val('');
@@ -213,8 +257,8 @@
 			//$('#searchForm').submit();
 			$('#collapseThree').collapse('hide');
 			$("#mytab").bootstrapTable("refresh");
-		})
-		$('#delBtn').on('click', function(){
+		});
+		$('#comBtn').on('click', function(){
 			var rows = $("#mytab").bootstrapTable("getSelections");
 			if(rows.length == 0){
 			    toastr.info("请至少选择一行数据");
@@ -226,7 +270,7 @@
 					ids.push(rows[i].id);
 				}
 				$.ajax({
-					url:"delete",
+					url:"complete",
 					dataType:"json",
 					traditional: true,
 					method:"post",
@@ -234,15 +278,48 @@
 						"ids":ids
 					},
 					success:function(data){
-						toastr.success('删除成功');
+						toastr.success('结束生产成功');
 						$("#mytab").bootstrapTable("refresh");
 					},
 					error:function(){
-						toastr.error('删除失败');
+						toastr.error('结束生产失败');
 					}
 				});
 			}
-		})
+		});
+		$('#delBtn').on('click', function(){
+			var rows = $("#mytab").bootstrapTable("getSelections");
+			if(rows.length == 0){
+			    toastr.info("请至少选择一行数据");
+			}else{
+				$("#delModal").modal('show');
+				$("#comDelBtn").on('click', function(){
+					var ids = [];
+					var len = rows.length;
+					
+					for(var i=0;i<len;i++){
+						ids.push(rows[i].id);
+					}
+					$.ajax({
+						url:"delete",
+						dataType:"json",
+						traditional: true,
+						method:"post",
+						data:{
+							"ids":ids
+						},
+						success:function(data){
+							$("#delModal").modal('hide');
+							toastr.success('删除成功');
+							$("#mytab").bootstrapTable("refresh");
+						},
+						error:function(){
+							toastr.error('删除失败');
+						}
+					});
+				})
+			}
+		});
 		$('#editBtn').on('click', function(){
 			var rows = $("#mytab").bootstrapTable('getSelections');
 			if (rows.length != 1) {
@@ -280,7 +357,7 @@
 					});
 				})
 			}
-		})
+		});
 
 		$('#mytab').bootstrapTable({
 			method : 'get',
@@ -323,7 +400,7 @@
 				title : '生产日期',
 				field : 'proDate',
 				formatter : function(value, row, index) {
-					return changeDateFormat(value)
+					return changeDateFormat(value, 'Y')
 				}
 			}, {
 				title : '计划数目',
@@ -344,19 +421,33 @@
 						return '-';
 					}
 				}
-			} ]
-		})
+			} , {
+				title : '产品生产状态',
+				field : 'proStatus',
+				formatter : function(value, row, index) {
+					if(value && value == '1'){
+						return '已完成';
+					}else{
+						return '-';
+					}
+				}
+			}]
+		});
 
-		function changeDateFormat(cellval) {
+		function changeDateFormat(cellval, show) {
 			var dateVal = cellval + "";
 			if (cellval != null) {
 				var date = new Date(parseInt(dateVal.replace("/Date(", "").replace(")/", ""), 10));
 				var month = date.getMonth() + 1 < 10 ? "0" + (date.getMonth() + 1) : date.getMonth() + 1;
 				var currentDate = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-				//var hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
-				//var minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
-				//var seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
-				return date.getFullYear() + "-" + month + "-" + currentDate; //+ " " + hours + ":" + minutes + ":" + seconds;
+				var hours = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+				var minutes = date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+				var seconds = date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
+				if(show){
+					return date.getFullYear() + "-" + month + "-" + currentDate;
+				} else {
+					return date.getFullYear() + "-" + month + "-" + currentDate + " " + hours + ":" + minutes + ":" + seconds;
+				}
 			}
 		}
 		toastr.options = {

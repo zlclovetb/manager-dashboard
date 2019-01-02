@@ -7,7 +7,7 @@ import java.util.Date;
  * InnoDB free: 3917824 kB order_plan
  * @author Spring.Zhang
  * @company ParaDM Limited
- * @creation date:2018-12-21 18:48:00
+ * @creation date:2018-12-28 15:02:43
  */
 public class OrderPlan implements Serializable {
     /** 
@@ -54,6 +54,11 @@ public class OrderPlan implements Serializable {
      * 紧要程度
      */ 
     private Integer propertie;
+
+    /** 
+     * 订单完成状态
+     */ 
+    private String proStatus;
 
     /** 
      * 串行版本ID
@@ -202,5 +207,21 @@ public class OrderPlan implements Serializable {
      */
     public void setPropertie(Integer propertie) {
         this.propertie = propertie;
+    }
+
+    /** 
+     * 获取 订单完成状态 order_plan.PRO_STATUS
+     * @return 订单完成状态
+     */
+    public String getProStatus() {
+        return proStatus;
+    }
+
+    /** 
+     * 设置 订单完成状态 order_plan.PRO_STATUS
+     * @param proStatus 订单完成状态
+     */
+    public void setProStatus(String proStatus) {
+        this.proStatus = proStatus == null ? null : proStatus.trim();
     }
 }
