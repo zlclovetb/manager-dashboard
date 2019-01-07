@@ -1,39 +1,44 @@
 package com.spring.production.listener;
 
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.Socket;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ReceiveJob implements Runnable {
+public class ReceiveJob extends Thread {
   private Logger logger = LoggerFactory.getLogger(ReceiveJob.class);
-  private int port = 0;
+  Socket socket = null;
 
-  public ReceiveJob(int port) {
-    this.port = port;
+  public ReceiveJob(Socket socket) {
+    this.socket = socket;
   }
 
   public void run() {
-    // 准备空包
-    byte[] infos = new byte[1024];
-    DatagramPacket packet = new DatagramPacket(infos, infos.length);
-    // 准备socket
-    DatagramSocket socket = null;
+    InputStream is = null;
     try {
-      socket = new DatagramSocket(port);
-      String str = "";
-      while (true) {
-        // 接收数据包
-        socket.receive(packet);
-        str = new String(packet.getData(), 0, packet.getLength());
-        // 输出
-        System.out.println(str);
+      is = socket.getInputStream();
+      String info = null;
+      byte[] bytes = new byte[1024];
+      int len;
+      while ((len = is.read(bytes)) != -1) {
+        info = new String(bytes, 0, len);
+        logger.info("I am tep server, client say: " + info);
       }
-    } catch (Exception e) {
+      socket.shutdownInput();
+    } catch (IOException e) {
       logger.error(e.getMessage(), e);
     } finally {
-      socket.close();
+      // 关闭资源
+      try {
+        if (is != null)
+          is.close();
+        if (socket != null)
+          socket.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
   }
 }

@@ -13,9 +13,9 @@ public class SocketListener implements ServletContextListener {
     String portPara = sctx.getInitParameter("socketPort");
     int prot = Integer.valueOf(portPara);
     if (thread == null) {
-      ReceiveJob job = new ReceiveJob(prot);
+      ServerJob job = new ServerJob(prot);
       thread = new Thread(job);
-      thread.setDaemon(true);
+      //thread.setDaemon(true);
       thread.start();
     }
   }
