@@ -10,9 +10,11 @@ import org.slf4j.LoggerFactory;
 public class ServerJob implements Runnable {
   private Logger logger = LoggerFactory.getLogger(ServerJob.class);
   private int port = 0;
+  private int size = 0;
 
-  public ServerJob(int port) {
+  public ServerJob(int port, int size) {
     this.port = port;
+    this.size = size;
   }
 
   public void run() {
@@ -24,7 +26,7 @@ public class ServerJob implements Runnable {
       while (true) {
         socket = serverSocket.accept();
 
-        ReceiveJob serverThread = new ReceiveJob(socket);
+        ReceiveJob serverThread = new ReceiveJob(socket, size);
         serverThread.start();
 
         count++;

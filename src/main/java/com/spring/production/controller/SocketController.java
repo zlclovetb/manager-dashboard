@@ -30,7 +30,6 @@ public class SocketController {
 
   @RequestMapping(path = "send/{count}", method = RequestMethod.GET)
   public void sendMsg(@PathVariable("count") String count) {
-    System.err.println("send Msg....");
     String line = "0";
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
     String str = simpleDateFormat.format(new Date());

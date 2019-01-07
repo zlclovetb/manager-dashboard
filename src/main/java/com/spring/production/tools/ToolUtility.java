@@ -72,4 +72,10 @@ public class ToolUtility {
     todayEnd.set(Calendar.MILLISECOND, 999);
     return new Date(todayEnd.getTime().getTime());
   }
+  
+  public static int calculate(String sigore) {
+    int l = sigore.charAt(4);
+    int h = sigore.charAt(7);
+    return (h - l + 1) * 20;
+  }
 }

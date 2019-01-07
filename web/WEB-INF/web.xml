@@ -42,6 +42,10 @@
     <param-name>socketPort</param-name>
     <param-value>888</param-value>
   </context-param>
+  <context-param>
+    <param-name>objSize</param-name>
+    <param-value>60</param-value>
+  </context-param>
 
   <context-param>
     <param-name>log4jConfigLocation</param-name>

@@ -11,9 +11,11 @@ public class SocketListener implements ServletContextListener {
   public void contextInitialized(ServletContextEvent sce) {
     ServletContext sctx = sce.getServletContext();
     String portPara = sctx.getInitParameter("socketPort");
+    String objSizePara = sctx.getInitParameter("objSize");
     int prot = Integer.valueOf(portPara);
+    int objSize = Integer.valueOf(objSizePara);
     if (thread == null) {
-      ServerJob job = new ServerJob(prot);
+      ServerJob job = new ServerJob(prot, objSize);
       thread = new Thread(job);
       //thread.setDaemon(true);
       thread.start();

@@ -131,8 +131,7 @@
 		console.log('jQuery(document).height()' + jQuery(document).height());
 		console.log('$("#sTable").offset().top' + $("#sTable").offset().top);
 		console.log('$("#sTable").height()' + $("#sTable").height());
-		console.log(jQuery(document).height() - $("#sTable").offset().top
-				- $("#sTable").height() - 200);
+		console.log(jQuery(document).height() - $("#sTable").offset().top - $("#sTable").height() - 200);
 		//document.getElementById("bar-chart").height = jQuery(document).height() - $("#sTable").offset().top - $("#sTable").height() -200 + 25;
 		//document.getElementById("line-chart").height = jQuery(document).height() - $("#sTable").offset().top - $("#sTable").height() -200;
 		window.chartColors = {
@@ -326,6 +325,8 @@
 				var count = parseInt(data.message);
 				//var oldVal = parseInt($("#pro_"+data.line).text());
 				$("#pro_"+data.line).text(count);
+				barChart.data.datasets[1].data[data.line - 1] = count;
+				barChart.update();
 			}
 		});
 

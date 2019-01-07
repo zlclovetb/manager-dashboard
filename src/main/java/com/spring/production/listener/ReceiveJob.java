@@ -7,12 +7,17 @@ import java.net.Socket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.spring.production.tools.HttpUtils;
+import com.spring.production.tools.ToolUtility;
+
 public class ReceiveJob extends Thread {
   private Logger logger = LoggerFactory.getLogger(ReceiveJob.class);
-  Socket socket = null;
+  private Socket socket = null;
+  private int size;
 
-  public ReceiveJob(Socket socket) {
+  public ReceiveJob(Socket socket, int size) {
     this.socket = socket;
+    this.size = size;
   }
 
   public void run() {
@@ -24,13 +29,18 @@ public class ReceiveJob extends Thread {
       int len;
       while ((len = is.read(bytes)) != -1) {
         info = new String(bytes, 0, len);
+        if(info.length() == 8) {
+          int size = ToolUtility.calculate(info);
+          if(size > this.size) {
+            HttpUtils.sendCountPlusOne();
+          }
+        }
         logger.info("I am tep server, client say: " + info);
       }
       socket.shutdownInput();
     } catch (IOException e) {
       logger.error(e.getMessage(), e);
     } finally {
-      // 关闭资源
       try {
         if (is != null)
           is.close();
